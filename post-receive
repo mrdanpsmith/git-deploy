@@ -1,0 +1,78 @@
+#!/usr/bin/python
+
+import commands, subprocess, os, sys, tempfile, re
+
+git_config_section = "postgit"
+
+def git_config_value(name, default=None):
+	(out,error) = run_cmd("git config --get %s.%s" % (git_config_section,name))
+	out = out.strip()
+	if len(out) == 0:
+		return default
+	if out.lower() == "true":
+		return True
+	if out.lower() == "false":
+		return False
+	return out 
+
+def empty_folder(folder):
+	for the_file in os.listdir(folder):
+		file_path = os.path.join(folder, the_file)
+		if os.path.isfile(file_path):
+			os.unlink(file_path)
+		if os.path.isdir(file_path):
+			empty_folder(file_path)
+
+def extract_tar_archive(archive_path, destination):
+	import tarfile
+	archive = tarfile.open(archive_path)
+	archive.extractall(destination)
+	archive.close()
+
+def extract_zip_archive(archive_path, destination):
+	import zipfile
+	archive = zipfile.open(archive_path)
+	archive.extractall(destination)
+	archive.close()
+
+def extract_archive(archive_path, archive_format, destination):
+	if archive_format.lower() == 'zip':
+		extract_zip_archive(archive_path,destination)
+	else:
+		extract_tar_archive(archive_path,destination)
+
+def run_deploy_script(working_directory,script_filename):
+	pr = subprocess.Popen(os.path.join(working_directory,script_filename), cwd = working_directory, shell = True)
+	return pr.communicate()
+
+def run_cmd(cmd):
+	pr = subprocess.Popen(cmd, shell = True, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+	return pr.communicate()
+
+def run_deploy(oldrev, newrev, refname):
+	destination = git_config_value("destination")
+	temp_path = git_config_value("temppath",tempfile.gettempdir())
+	script_to_run = git_config_value("scripttorun","deploy")
+	archive_format = git_config_value("archiveformat","tar")
+	delete_archive = git_config_value("deletearchive",True)
+
+	archive_path = os.path.join(temp_path,"%s.%s" % (newrev,archive_format))
+
+	if not os.path.exists(destination) or not os.path.isdir(destination):
+		os.makedirs(destination)
+	empty_folder(destination)
+
+	run_cmd("git archive -o %s %s" % (archive_path,newrev))
+	
+	extract_archive(archive_path,archive_format,destination)
+
+	if delete_archive:
+		os.unlink(archive_path)
+
+	run_deploy_script(destination,script_to_run) 
+
+if __name__ == '__main__':
+	(oldrev, newrev, refname) = sys.stdin.readlines()[0].split()
+	pattern = git_config_value("refpattern","refs/heads/master")
+	if re.match(pattern, refname):
+		run_deploy(oldrev,newrev,refname)
