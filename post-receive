@@ -2,7 +2,7 @@
 
 import commands, subprocess, os, sys, tempfile, re
 
-git_config_section = "postgit"
+git_config_section = "pushdeploy"
 
 def git_config_value(name, default=None):
 	(out,error) = run_cmd("git config --get %s.%s" % (git_config_section,name))

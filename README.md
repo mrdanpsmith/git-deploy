@@ -9,7 +9,7 @@ The hook is configurable using the same git configuration that git itself uses a
 
 The git configuration values are as follows:
 
-    [postgit]
+    [pushdeploy]
         destination = directory to deploy to (absolute path) (Required)
         temp_path = your temp directory (defaults to the system set temp directory) (Optional)
         script_to_run = the filename of the script in the build to run (Required)
