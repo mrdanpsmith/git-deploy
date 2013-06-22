@@ -1,4 +1,4 @@
-git-push-deploy
+git-deploy
 ===============
 
 Simple git post-receive hook designed to allow automated deploy of applications via git push.
