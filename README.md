@@ -19,13 +19,11 @@ Configuration
 ---------------
 **Regular repositories:**
 
-Change the repository configuration property receive.denyCurrentBranch to ignore.
+Change the repository configuration property receive.denyCurrentBranch to ignore.  Start with an empty repository or ensure the branch is set to master.
 ```bash
 git config --local receive.denyCurrentBranch ignore
 ```
 See [this article](https://www.kernel.org/pub/software/scm/git/docs/git-config.html) for more details on how to configure git.
-
-Start with an empty repository or ensure the branch is set to master.
 
 **Bare repositories:**
 
