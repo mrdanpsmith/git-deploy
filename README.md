@@ -35,12 +35,23 @@ git config --local deploy.destination /var/www/public/mysite.com
 ```
 See [this article](https://www.kernel.org/pub/software/scm/git/docs/git-config.html) for more details on how to configure git.
 
-All custom configuration
+**Deploy Scripts:**
+
+If you want to do more than simply send code updates, you can configure the post-receive hook so that a single deploy script runs.
+
+The script will run with the working directory as the repository root and should be marked as executable.
+
+```bash
+git config --local deploy.script deploy.py
+```
+See [this article](https://www.kernel.org/pub/software/scm/git/docs/git-config.html) for more details on how to configure git.
+
+Custom Configuration Values
 ---------------
 The git configuration values are as follows:
 
     [deploy]
-        scripttorun = script to run after the code is updated (Optional)
+        script = script to run after the code is updated (Optional)
         destination = in a bare repository, the directory to update (Required for bare repositories [see above])
 
 Troubleshooting
@@ -48,6 +59,10 @@ Troubleshooting
 **The post-receive hook is not executing on push.**
 
 Make sure that the post-receive hook is marked as executable according to your operating system (chmod +x on unix-like systems).
+
+**My deployment script is not executing on push.**
+
+Make sure that the deployment script is marked as executable according to your operating system (chmod +x on unix-like systems).
 
 **The remote push refuses to update the target server.**
 
