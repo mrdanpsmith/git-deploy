@@ -18,8 +18,9 @@ Configure as per the instructions below.
 Configuration
 ---------------
 **Regular repositories:**
+Start with an empty repository or ensure the branch is set to master.
 
-Change the repository configuration property receive.denyCurrentBranch to ignore.  Start with an empty repository or ensure the branch is set to master.
+Change the repository configuration property receive.denyCurrentBranch to ignore.
 ```bash
 git config --local receive.denyCurrentBranch ignore
 ```
