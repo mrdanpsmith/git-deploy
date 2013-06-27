@@ -33,6 +33,7 @@ Configure deploy.destination to the directory you want the updated code in.
 ```bash
 git config --local deploy.destination /var/www/public/mysite.com
 ```
+See [this article](https://www.kernel.org/pub/software/scm/git/docs/git-config.html) for more details on how to configure git.
 
 All custom configuration
 ---------------
