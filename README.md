@@ -17,7 +17,7 @@ Configure as per the instructions below.
 
 Configuration
 ---------------
-Regular repositories:
+**Regular repositories:**
 
 Change the repository configuration property receive.denyCurrentBranch to ignore.
 ```bash
@@ -27,7 +27,7 @@ See [this article](https://www.kernel.org/pub/software/scm/git/docs/git-config.h
 
 Start with an empty repository or ensure the branch is set to master.
 
-Bare repositories:
+**Bare repositories:**
 Configure deploy.destination to the directory you want the updated code in. 
 ```bash
 git config --local deploy.destination /var/www/public/mysite.com
