@@ -17,7 +17,7 @@ Configure as per the instructions below.
 
 Configuration
 ---------------
-###Regular repositories:###
+Regular repositories:
 # Change the repository configuration property receive.denyCurrentBranch to ignore.
 ```bash
 git config --local receive.denyCurrentBranch ignore
@@ -26,7 +26,7 @@ See [this article](https://www.kernel.org/pub/software/scm/git/docs/git-config.h
 
 # Start with an empty repository or ensure the branch is set to master.
 
-### Bare repositories:###
+ Bare repositories:
 # Configure deploy.destination to the directory you want the updated code in. 
 ```bash
 git config --local deploy.destination /var/www/public/mysite.com
@@ -43,7 +43,9 @@ The git configuration values are as follows:
 Troubleshooting
 ---------------
 * _The post-receive hook is not executing on push._
-** Make sure that the post-receive hook is marked as executable according to your operating system (chmod +x on unix-like systems).
+
+Make sure that the post-receive hook is marked as executable according to your operating system (chmod +x on unix-like systems).
 
 * _The remote push refuses to update the target server._
-** Make sure that the repository has receive.denyCurrentBranch set to ignore.
+
+Make sure that the repository has receive.denyCurrentBranch set to ignore.
