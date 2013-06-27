@@ -1,14 +1,32 @@
 git-deploy
 ===============
+This is a git post-receive python hook designed to allow automated deploy of applications via git push.
 
-Simple git post-receive hook designed to allow automated deploy of applications via git push.
+It is also designed so that you can run a simple callback when there are pushes to a git repository.
 
-The idea of this one is to make it so that you can run a simple callback when there's pushes to a remote git repository.
+Requirements
+---------------
+* python
+* git repository
 
-The hook is configurable using the same git configuration that git itself uses and requires only python scripting support in order to run.
+Installation
+---------------
+Copy post-receive into your git hooks directory.
 
+Configure as per the instructions below.
+
+Configuration
+---------------
+Regular repositories:
+It is necessary to set receive.denyCurrentBranch to ignore to set target repository branch to master.
+
+Bare repositories:
+It is necessary to set deploy.destination to the directory you want the updated code in. 
+
+All custom configuration
+---------------
 The git configuration values are as follows:
 
     [deploy]
-        scripttorun = the filename of a deployment script to run after the code is updated (Optional)
-        refpattern = a regex pattern to compare against the refs being pushed and determine whether its actionable (defaults to "refs/heads/master") (Optional)
+        scripttorun = script to run after the code is updated (Optional)
+	destination = in a bare repository, the directory to update (Required for bare repositories [see above])

@@ -2,22 +2,22 @@
 
 import commands, subprocess, os, sys, re
 
-git_config_section = "deploy"
-
-def get_worktree_directory():
-	return os.path.abspath(os.path.join(os.getcwd(),'..'))
+refpattern = "refs/heads/master"
 
 def print_if_present(s):
 	o = s.strip()
 	if (len(o) > 0):
 		print(o)
 
-def run_git_cmd(cmd):
-	pr = subprocess.Popen("git --work-tree=%s %s" % (get_worktree_directory(),cmd), shell = True, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+def run_cmd(cmd):
+	pr = subprocess.Popen(cmd, shell = True, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
 	return pr.communicate()
 
-def git_config_value(name, default=None):
-	(out,error) = run_git_cmd("config --get %s.%s" % (git_config_section,name))
+def run_git_cmd(cmd):
+	return run_cmd("git --work-tree=%s %s" % (get_worktree_directory(),cmd))
+
+def git_config_value(key, default=None):
+	(out,error) = run_cmd("git config --get %s" % (key))
 	out = out.strip()
 	if len(out) == 0:
 		return default
@@ -25,14 +25,20 @@ def git_config_value(name, default=None):
 		return True
 	if out.lower() == "false":
 		return False
-	return out 
+	return out
+
+def get_worktree_directory():
+	if git_config_value("core.bare",False):
+		return git_config_value("deploy.destination")
+	else:
+		return os.path.abspath(os.path.join(os.getcwd(),'..'))
 
 def run_deploy_script(working_directory,script_filename):
 	pr = subprocess.Popen(os.path.join(working_directory,script_filename), cwd = working_directory, shell = True, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
 	return pr.communicate()
 
 def run_deploy(oldrev, newrev, refname):
-	script_to_run = git_config_value("scripttorun",None)
+	script = git_config_value("deploy.script",None)
 
 	print("Resetting tree to pushed version (%s)." % (newrev))
 
@@ -40,14 +46,13 @@ def run_deploy(oldrev, newrev, refname):
 	print_if_present(error)
 	print_if_present(out)
 
-	if script_to_run != None:
+	if script != None:
 		print("Running deployment script.")
-		(out, error) = run_deploy_script(get_worktree_directory(),script_to_run)
+		(out, error) = run_deploy_script(get_worktree_directory(),script)
 		print_if_present(error)
 		print_if_present(out)
 
 if __name__ == '__main__':
 	(oldrev, newrev, refname) = sys.stdin.readlines()[0].split()
-	refpattern = git_config_value("refpattern","refs/heads/master")
 	if re.match(refpattern, refname):
 		run_deploy(oldrev,newrev,refname)
